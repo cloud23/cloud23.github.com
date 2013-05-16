@@ -1,0 +1,84 @@
+---
+layout: post
+title: "Sassy Compass"
+date: 2013-03-27 16:43
+comments: true
+categories: [SASS, Compass]
+---
+
+<h1>Learning to use SASS and Compass</h1>
+
+<section>
+	<article>
+		<p>
+			First off, let's talk about SASS. SASS or Syntactically Awesome Stylesheets according to <a href="http://sass-lang.com/">sass-lang.com</a> is a meta-language on top of CSS that’s used to describe the style of a document cleanly and structurally, with more power than flat CSS allows. SassScript provides the following mechanisms: variables, nesting, mixins, and selector inheritance. These mechanisms were something I wish I had back when I was still working on web applications at my old company. I will not go too much into details on how to use SASS because it is already well explained on the sass-lang website. Instead, I will post here some snippets of CSS scripts from my old project and how I would've made it better had I used SASS on that project.
+			<!-- more -->
+			<h2>Variable Use</h2>
+			Sass allows variable declaration and use throughout the stylesheet. You can declare variable the same way you define a property except you have to put the dollar ($) sign in front of it like this:
+{% codeblock %}
+$myValue: 100px;
+{% endcodeblock %}
+			It would've have been great if I were able to use variables in my CSS back then. Lets say I wish to change the primary color I use for my app. Changing it would mean I have to change the color values for these rules:
+
+{% codeblock old css.css %}
+h1
+{
+  padding-top: 0px;
+  font-family: Arial;
+  color: #004682; /* change this */
+}
+h2
+{
+  padding-top: 0px;
+  font-family: sans-serif;
+  color: #004682; /* and this */
+}
+
+a.headlink{
+  color: #004682; /* and this */
+}
+{% endcodeblock %}
+
+			And that's just a few of the rules where I used the primary color. I had to go through all of it just to change something so simple. With sass, I could do something like this:
+
+{% codeblock the sass way.css %}
+$primaryColor: #004682; 
+h1
+{
+  padding-top: 0px;
+  font-family: Arial;
+  color: $primaryColor;
+}
+
+h2
+{
+  font-family: sans-serif;
+  color: $primaryColor;
+  padding-top: 5px;
+}
+
+a.headlink{
+  color: $primaryColor;
+}
+{% endcodeblock %}
+			So if the client decided to change their mind (again!) about the color, I just have to change it in the main variable I have set.
+		</p>
+
+		<h2>Nesting</h2>
+		<p>
+			
+		</p>
+
+		- SASS introduction first
+			- example of old way doing CSS
+
+			1. creating a new project with compass:
+				compass create path  [--using blueprint] [--sass-dir=sass ...] [--project-type=rails]
+			2. adding compass to an existing project:
+				compass init rails path [--using blueprint]
+
+				indept commands can be found at http://compass-style.org/help/tutorials/command-line/
+
+			3. 
+	</article>
+</section>
