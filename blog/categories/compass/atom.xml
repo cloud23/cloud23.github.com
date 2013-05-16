@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: Compass | Clouded Mind]]></title>
+  <link href="http://cloud23.github.com/blog/categories/compass/atom.xml" rel="self"/>
+  <link href="http://cloud23.github.com/"/>
+  <updated>2013-03-27T18:55:10+08:00</updated>
+  <id>http://cloud23.github.com/</id>
+  <author>
+    <name><![CDATA[Efren Lim]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Sassy Compass]]></title>
+    <link href="http://cloud23.github.com/blog/2013/03/27/sassy-compass/"/>
+    <updated>2013-03-27T16:43:00+08:00</updated>
+    <id>http://cloud23.github.com/blog/2013/03/27/sassy-compass</id>
+    <content type="html"><![CDATA[<h1>Learning to use SASS and Compass</h1>
+
+
+<p><section></p>
+
+<pre><code>&lt;article&gt;
+    &lt;p&gt;
+        First off, let's talk about SASS. SASS or Syntactically Awesome Stylesheets according to &lt;a href="http://sass-lang.com/"&gt;sass-lang.com&lt;/a&gt; is a meta-language on top of CSS that’s used to describe the style of a document cleanly and structurally, with more power than flat CSS allows. SassScript provides the following mechanisms: variables, nesting, mixins, and selector inheritance. These mechanisms were something I wish I had back when I was still working on web applications at my old company. I will not go too much into details on how to use SASS because it is already well explained on the sass-lang website. Instead, I will post here some snippets of CSS scripts from my old project and how I would've made it better had I used SASS on that project.
+        &lt;!-- more --&gt;
+        &lt;h2&gt;Variable Use&lt;/h2&gt;
+        Sass allows variable declaration and use throughout the stylesheet. You can declare variable the same way you define a property except you have to put the dollar ($) sign in front of it like this:
+</code></pre>
+
+<p><div class='bogus-wrapper'><notextile><figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$myValue: 100px;</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<pre><code>        It would've have been great if I were able to use variables in my CSS back then. Lets say I wish to change the primary color I use for my app. Changing it would mean I have to change the color values for these rules:
+</code></pre>
+
+<p><div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span>old css.css </span></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+</pre></td><td class='code'><pre><code class='css'><span class='line'><span class="nt">h1</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>  <span class="k">padding-top</span><span class="o">:</span> <span class="m">0px</span><span class="p">;</span>
+</span><span class='line'>  <span class="k">font-family</span><span class="o">:</span> <span class="n">Arial</span><span class="p">;</span>
+</span><span class='line'>  <span class="k">color</span><span class="o">:</span> <span class="m">#004682</span><span class="p">;</span> <span class="o">/&lt;</span><span class="n">em</span><span class="o">&gt;</span> <span class="n">change</span> <span class="n">this</span> <span class="o">&lt;/</span><span class="n">em</span><span class="o">&gt;/</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="nt">h2</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>  <span class="k">padding-top</span><span class="o">:</span> <span class="m">0px</span><span class="p">;</span>
+</span><span class='line'>  <span class="k">font-family</span><span class="o">:</span> <span class="k">sans-serif</span><span class="p">;</span>
+</span><span class='line'>  <span class="k">color</span><span class="o">:</span> <span class="m">#004682</span><span class="p">;</span> <span class="o">/&lt;</span><span class="n">em</span><span class="o">&gt;</span> <span class="n">and</span> <span class="n">this</span> <span class="o">&lt;/</span><span class="n">em</span><span class="o">&gt;/</span>
+</span><span class='line'><span class="p">}</span><span class="o">&lt;/</span><span class="nt">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nt">p</span><span class="o">&gt;</span><span class="nt">a</span><span class="nc">.headlink</span><span class="p">{</span>
+</span><span class='line'>  <span class="k">color</span><span class="o">:</span> <span class="m">#004682</span><span class="p">;</span> <span class="o">/&lt;</span><span class="n">em</span><span class="o">&gt;</span> <span class="n">and</span> <span class="n">this</span> <span class="o">&lt;/</span><span class="n">em</span><span class="o">&gt;/</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<pre><code>        And that's just a few of the rules where I used the primary color. I had to go through all of it just to change something so simple. With sass, I could do something like this:
+</code></pre>
+
+<p><div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span>the sass way.css </span></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+</pre></td><td class='code'><pre><code class='css'><span class='line'><span class="err">$</span><span class="nt">primaryColor</span><span class="o">:</span> <span class="nf">#004682</span><span class="o">;</span>
+</span><span class='line'><span class="nt">h1</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>  <span class="k">padding-top</span><span class="o">:</span> <span class="m">0px</span><span class="p">;</span>
+</span><span class='line'>  <span class="k">font-family</span><span class="o">:</span> <span class="n">Arial</span><span class="p">;</span>
+</span><span class='line'>  <span class="k">color</span><span class="o">:</span> <span class="err">$</span><span class="n">primaryColor</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span><span class="o">&lt;/</span><span class="nt">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nt">p</span><span class="o">&gt;</span><span class="nt">h2</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>  <span class="k">font-family</span><span class="o">:</span> <span class="k">sans-serif</span><span class="p">;</span>
+</span><span class='line'>  <span class="k">color</span><span class="o">:</span> <span class="err">$</span><span class="n">primaryColor</span><span class="p">;</span>
+</span><span class='line'>  <span class="k">padding-top</span><span class="o">:</span> <span class="m">5px</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span><span class="o">&lt;/</span><span class="nt">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nt">p</span><span class="o">&gt;</span><span class="nt">a</span><span class="nc">.headlink</span><span class="p">{</span>
+</span><span class='line'>  <span class="k">color</span><span class="o">:</span> <span class="err">$</span><span class="n">primaryColor</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<pre><code>        So if the client decided to change their mind (again!) about the color, I just have to change it in the main variable I have set.
+    &lt;/p&gt;
+
+    &lt;h2&gt;Nesting&lt;/h2&gt;
+    &lt;p&gt;
+
+    &lt;/p&gt;
+
+    - SASS introduction first
+        - example of old way doing CSS
+
+        1. creating a new project with compass:
+            compass create path  [--using blueprint] [--sass-dir=sass ...] [--project-type=rails]
+        2. adding compass to an existing project:
+            compass init rails path [--using blueprint]
+
+            indept commands can be found at http://compass-style.org/help/tutorials/command-line/
+
+        3. 
+&lt;/article&gt;
+</code></pre>
+
+<p></section></p>
+]]></content>
+  </entry>
+  
+</feed>

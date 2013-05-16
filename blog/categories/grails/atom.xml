@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: grails | Clouded Mind]]></title>
+  <link href="http://cloud23.github.com/blog/categories/grails/atom.xml" rel="self"/>
+  <link href="http://cloud23.github.com/"/>
+  <updated>2013-03-27T18:55:10+08:00</updated>
+  <id>http://cloud23.github.com/</id>
+  <author>
+    <name><![CDATA[Efren Lim]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Road Blocks]]></title>
+    <link href="http://cloud23.github.com/blog/2013/03/20/road-blocks/"/>
+    <updated>2013-03-20T22:48:00+08:00</updated>
+    <id>http://cloud23.github.com/blog/2013/03/20/road-blocks</id>
+    <content type="html"><![CDATA[<p><section></p>
+
+<pre><code>&lt;article&gt;
+    &lt;p&gt;
+        I recently started my new job in a new company after working in a construction firm as a software developer in Nigeria for almost 4 years. I was developing .Net window-based and web-based applications in Windows then which is totally different from the current company I belong now since they don't use any Microsoft products for development. For a .Net developer like me there is quite a bit of a learning curve that needs to be covered. I'm sure I am not the only one undergoing this transition, which is why I would like to post here all the "Road Blocks" or transition difficulties that I encountered or will encounter. I will also post here the solutions to these problems once I solved them.
+    &lt;/p&gt;
+    &lt;!-- more --&gt;
+    &lt;h2&gt;OS Transition&lt;/h2&gt;
+    &lt;p&gt;
+        Right after I quit the old job, I had to say bye bye to Windows OS. I installed Ubuntu on my laptop and prepped it as a developer machine. This was the first road block that I encountered. Eventhough Linux has gone a long way in terms of user-friendliness, for someone who has only used Windows before there are still a lot of things to be learned. I've had a lot of problems installing and configuring applications. I had to do a lot of tinkering around just to prep my machine. 
+    &lt;/p&gt;
+    &lt;span class="bold"&gt;Solution:&lt;/span&gt;
+    &lt;p&gt;
+        Read up on Linux user guides and manuals. Be prepared also to type a lot of commands on the Terminal, as almost everything, if not all can be done there. And always remember, Google is your very best friend.
+    &lt;/p&gt;
+
+    &lt;h2&gt;Setting up grails and the JAVA_HOME problem&lt;/h2&gt;
+    &lt;p&gt;
+        This problem probably has something to do with me being a noob on Linux, but I'd like to post it anyway. I needed to run a Grails project on my dev machine so I installed the Grails packages and JDK since Grails uses Groovy which is based on Java. Since I'm new to all of this, I followed the installation instructions that was found on the Grails site &lt;a href="http://grails.org/download/ubuntu"&gt;here&lt;/a&gt; and how to install Java on the Ubuntu site &lt;a href="http://askubuntu.com/questions/55848/how-do-i-install-oracle-java-jdk-7"&gt;here&lt;/a&gt;. After the installation, I was excited to run the project so I typed:
+
+        <div class='bogus-wrapper'><notextile><figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>grails run-app</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+        After hitting the return key I encountered this problem:
+
+        <div class='bogus-wrapper'><notextile><figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>JAVA_HOME is not a directory: usr/lib/jvm/jdk1.7.0/bin/java</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+        I said to myself, "wait a minute, this looks familiar". Indeed it is, I had the same problem before when I was running Java-based application in Windows and the solution was to setup an Environment Variable for the JAVA_HOME in your Windows system. So how do I do that in a Linux environment? After Googling around, I found out that the ".bashrc" file located at the root directory is the equivalent of the Environment Variables in Windows. So I opened it with my text editor and typed at the last line the following:
+
+        <div class='bogus-wrapper'><notextile><figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>export JAVA_HOME="/usr/lib/jvm/jdk1.7.0"</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+        I removed the "/bin/java" because it was obviously pointing at a file and not the directory. After saving it, I refreshed my terminal and ran the Grails app again with fingers crossed. To my horror, I got the same error! What did I do wrong? Did I make a wrong input on the .bashrc file? Why was it saying the same error? It took me quite a long time to find the answer why.
+    &lt;/p&gt;
+    &lt;span class="bold"&gt;Solution:&lt;/span&gt;
+    &lt;p&gt;
+        After a lot uninstalling and installing Grails and JDK, trying out different versions and asking Google for an answer it hit me; why was it still pointing to the same location of JAVA_HOME even though I already set it to a different path? Grails was probably doing something to change the value of JAVA_HOME. So after a little more googling, I stumbled upon this site: &lt;a href="https://cis.ait.asia/course_offerings/56/handouts/267"&gt;https://cis.ait.asia/course_offerings/56/handouts/267&lt;/a&gt;. It confirmed my suspicion, Grails WAS changing the JAVA_HOME value, so I followed what it said there. I typed on my terminal the following:
+
+        <div class='bogus-wrapper'><notextile><figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>sudo gedit /usr/share/grails/2.1.1/bin/startGrails</span></code></pre></td></tr></table></div></figure></notextile></div>
+
+        I finally found the culprit! At the beginning of the file, I saw that it was indeed changing the JAVA_HOME variable. So I deleted that line, saved it and restarted my terminal. I ran the Grails app and victory at last!
+    &lt;/p&gt;
+    &lt;p class="italics"&gt;Note: You can probably correct the JAVA_HOME variable path from there, but I like to have a single location for this variable so I chose the one on the .bashrc file.&lt;/p&gt;
+
+    &lt;h2&gt;Changing GIT config and online repository ssh keys&lt;/h2&gt;
+    &lt;p&gt;
+        When I started learning all these development tools, I was using my personnal email in my Git configuration. After getting my work email, I decided to use this new mail to create a new &lt;a href="https://github.com"&gt;GitHub&lt;/a&gt; account. I was still studying Git and part of the leasons was to learn how to push to an online repository and using ssh keys so that I don't need to type my username and password repeatedly. Everything was going smooth until I decided to open my .gitconfig file and found out that I was still using my personnal email. So I changed the configuration and used my work email (not sure if it matters but I changed it anyway), regenerated my ssh key and saved it to GitHub. After that my git wasn't pushing anymore, so what wrong did I do now? 
+    &lt;/p&gt;
+
+    &lt;span class="bold"&gt;Solution:&lt;/span&gt;
+    &lt;p&gt;
+        After repeatedly deleting and regenerating my ssh key, I was going nowhere. So I did a little snooping around the .ssh directory:
+</code></pre>
+
+<p><div class='bogus-wrapper'><notextile><figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>ls ~/.ssh
+</span><span class='line'>id_rsa  id_rsa.pub  known_hosts</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<pre><code>        I know that I am getting my ssh key from the id_rsa.pub file, but this known_hosts file really caught my eye. I opened it and it was all gibberish, but as the name implied, it probably was a log of remote hosts and repos but I wasn't so sure. I decided to delete it anyway, regenerated my ssh keys and accessed my remote repository, and it worked! There was a new known_hosts file on the ssh directory that was created and everything was running smoothly again.
+    &lt;/p&gt;
+
+    &lt;p&gt;
+        These are all the road blocks that I had so far, I will continue to update this blog whenever I encounter a new one.
+    &lt;/p&gt;
+&lt;/article&gt;
+</code></pre>
+
+<p></section></p>
+]]></content>
+  </entry>
+  
+</feed>

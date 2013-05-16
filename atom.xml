@@ -1,0 +1,225 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Clouded Mind]]></title>
+  <link href="http://cloud23.github.com/atom.xml" rel="self"/>
+  <link href="http://cloud23.github.com/"/>
+  <updated>2013-03-27T18:55:10+08:00</updated>
+  <id>http://cloud23.github.com/</id>
+  <author>
+    <name><![CDATA[Efren Lim]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Sassy Compass]]></title>
+    <link href="http://cloud23.github.com/blog/2013/03/27/sassy-compass/"/>
+    <updated>2013-03-27T16:43:00+08:00</updated>
+    <id>http://cloud23.github.com/blog/2013/03/27/sassy-compass</id>
+    <content type="html"><![CDATA[<h1>Learning to use SASS and Compass</h1>
+
+<section>
+	<article>
+		<p>
+			First off, let&#8217;s talk about SASS. SASS or Syntactically Awesome Stylesheets according to <a href="http://sass-lang.com/">sass-lang.com</a> is a meta-language on top of CSS that’s used to describe the style of a document cleanly and structurally, with more power than flat CSS allows. SassScript provides the following mechanisms: variables, nesting, mixins, and selector inheritance. These mechanisms were something I wish I had back when I was still working on web applications at my old company. I will not go too much into details on how to use SASS because it is already well explained on the sass-lang website. Instead, I will post here some snippets of CSS scripts from my old project and how I would&#8217;ve made it better had I used SASS on that project.
+			<!-- more -->
+			<h2>Variable Use</h2>
+			Sass allows variable declaration and use throughout the stylesheet. You can declare variable the same way you define a property except you have to put the dollar ($) sign in front of it like this:
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$myValue: 100px;</span></code></pre></td></tr></table></div></figure>
+			It would&#8217;ve have been great if I were able to use variables in my CSS back then. Lets say I wish to change the primary color I use for my app. Changing it would mean I have to change the color values for these rules:
+
+<figure class='code'><figcaption><span>old css.css </span></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+</pre></td><td class='code'><pre><code class='css'><span class='line'><span class="nt">h1</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>  <span class="k">padding-top</span><span class="o">:</span> <span class="m">0px</span><span class="p">;</span>
+</span><span class='line'>  <span class="k">font-family</span><span class="o">:</span> <span class="n">Arial</span><span class="p">;</span>
+</span><span class='line'>  <span class="k">color</span><span class="o">:</span> <span class="m">#004682</span><span class="p">;</span> <span class="c">/* change this */</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="nt">h2</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>  <span class="k">padding-top</span><span class="o">:</span> <span class="m">0px</span><span class="p">;</span>
+</span><span class='line'>  <span class="k">font-family</span><span class="o">:</span> <span class="k">sans-serif</span><span class="p">;</span>
+</span><span class='line'>  <span class="k">color</span><span class="o">:</span> <span class="m">#004682</span><span class="p">;</span> <span class="c">/* and this */</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="nt">a</span><span class="nc">.headlink</span><span class="p">{</span>
+</span><span class='line'>  <span class="k">color</span><span class="o">:</span> <span class="m">#004682</span><span class="p">;</span> <span class="c">/* and this */</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+			And that&#8217;s just a few of the rules where I used the primary color. I had to go through all of it just to change something so simple. With sass, I could do something like this:
+
+<figure class='code'><figcaption><span>the sass way.css </span></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+</pre></td><td class='code'><pre><code class='css'><span class='line'><span class="err">$</span><span class="nt">primaryColor</span><span class="o">:</span> <span class="nf">#004682</span><span class="o">;</span>
+</span><span class='line'><span class="nt">h1</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>  <span class="k">padding-top</span><span class="o">:</span> <span class="m">0px</span><span class="p">;</span>
+</span><span class='line'>  <span class="k">font-family</span><span class="o">:</span> <span class="n">Arial</span><span class="p">;</span>
+</span><span class='line'>  <span class="k">color</span><span class="o">:</span> <span class="err">$</span><span class="n">primaryColor</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="nt">h2</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>  <span class="k">font-family</span><span class="o">:</span> <span class="k">sans-serif</span><span class="p">;</span>
+</span><span class='line'>  <span class="k">color</span><span class="o">:</span> <span class="err">$</span><span class="n">primaryColor</span><span class="p">;</span>
+</span><span class='line'>  <span class="k">padding-top</span><span class="o">:</span> <span class="m">5px</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="nt">a</span><span class="nc">.headlink</span><span class="p">{</span>
+</span><span class='line'>  <span class="k">color</span><span class="o">:</span> <span class="err">$</span><span class="n">primaryColor</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+			So if the client decided to change their mind (again!) about the color, I just have to change it in the main variable I have set.
+		</p>
+
+		<h2>Nesting</h2>
+		<p>
+			
+		</p>
+
+		- SASS introduction first
+			- example of old way doing CSS
+
+			1. creating a new project with compass:
+				compass create path  [&#8211;using blueprint] [&#8211;sass-dir=sass &#8230;] [&#8211;project-type=rails]
+			2. adding compass to an existing project:
+				compass init rails path [&#8211;using blueprint]
+
+				indept commands can be found at http://compass-style.org/help/tutorials/command-line/
+
+			3. 
+	</article>
+</section>]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Road Blocks]]></title>
+    <link href="http://cloud23.github.com/blog/2013/03/20/road-blocks/"/>
+    <updated>2013-03-20T22:48:00+08:00</updated>
+    <id>http://cloud23.github.com/blog/2013/03/20/road-blocks</id>
+    <content type="html"><![CDATA[<section>
+	<article>
+		<p>
+			I recently started my new job in a new company after working in a construction firm as a software developer in Nigeria for almost 4 years. I was developing .Net window-based and web-based applications in Windows then which is totally different from the current company I belong now since they don&#8217;t use any Microsoft products for development. For a .Net developer like me there is quite a bit of a learning curve that needs to be covered. I&#8217;m sure I am not the only one undergoing this transition, which is why I would like to post here all the &#8220;Road Blocks&#8221; or transition difficulties that I encountered or will encounter. I will also post here the solutions to these problems once I solved them.
+		</p>
+		<!-- more -->
+		<h2>OS Transition</h2>
+		<p>
+			Right after I quit the old job, I had to say bye bye to Windows OS. I installed Ubuntu on my laptop and prepped it as a developer machine. This was the first road block that I encountered. Eventhough Linux has gone a long way in terms of user-friendliness, for someone who has only used Windows before there are still a lot of things to be learned. I&#8217;ve had a lot of problems installing and configuring applications. I had to do a lot of tinkering around just to prep my machine. 
+		</p>
+		<span class="bold">Solution:</span>
+		<p>
+			Read up on Linux user guides and manuals. Be prepared also to type a lot of commands on the Terminal, as almost everything, if not all can be done there. And always remember, Google is your very best friend.
+		</p>
+
+		<h2>Setting up grails and the JAVA_HOME problem</h2>
+		<p>
+			This problem probably has something to do with me being a noob on Linux, but I&#8217;d like to post it anyway. I needed to run a Grails project on my dev machine so I installed the Grails packages and JDK since Grails uses Groovy which is based on Java. Since I&#8217;m new to all of this, I followed the installation instructions that was found on the Grails site <a href="http://grails.org/download/ubuntu">here</a> and how to install Java on the Ubuntu site <a href="http://askubuntu.com/questions/55848/how-do-i-install-oracle-java-jdk-7">here</a>. After the installation, I was excited to run the project so I typed:
+
+			<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>grails run-app</span></code></pre></td></tr></table></div></figure>
+
+			After hitting the return key I encountered this problem:
+
+			<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>JAVA_HOME is not a directory: usr/lib/jvm/jdk1.7.0/bin/java</span></code></pre></td></tr></table></div></figure>
+
+			I said to myself, &#8220;wait a minute, this looks familiar&#8221;. Indeed it is, I had the same problem before when I was running Java-based application in Windows and the solution was to setup an Environment Variable for the JAVA_HOME in your Windows system. So how do I do that in a Linux environment? After Googling around, I found out that the &#8220;.bashrc&#8221; file located at the root directory is the equivalent of the Environment Variables in Windows. So I opened it with my text editor and typed at the last line the following:
+			
+			<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>export JAVA_HOME="/usr/lib/jvm/jdk1.7.0"</span></code></pre></td></tr></table></div></figure>
+
+			I removed the &#8220;/bin/java&#8221; because it was obviously pointing at a file and not the directory. After saving it, I refreshed my terminal and ran the Grails app again with fingers crossed. To my horror, I got the same error! What did I do wrong? Did I make a wrong input on the .bashrc file? Why was it saying the same error? It took me quite a long time to find the answer why.
+		</p>
+		<span class="bold">Solution:</span>
+		<p>
+			After a lot uninstalling and installing Grails and JDK, trying out different versions and asking Google for an answer it hit me; why was it still pointing to the same location of JAVA_HOME even though I already set it to a different path? Grails was probably doing something to change the value of JAVA_HOME. So after a little more googling, I stumbled upon this site: <a href="https://cis.ait.asia/course_offerings/56/handouts/267">https://cis.ait.asia/course_offerings/56/handouts/267</a>. It confirmed my suspicion, Grails WAS changing the JAVA_HOME value, so I followed what it said there. I typed on my terminal the following:
+
+			<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>sudo gedit /usr/share/grails/2.1.1/bin/startGrails</span></code></pre></td></tr></table></div></figure>
+
+			I finally found the culprit! At the beginning of the file, I saw that it was indeed changing the JAVA_HOME variable. So I deleted that line, saved it and restarted my terminal. I ran the Grails app and victory at last!
+		</p>
+		<p class="italics">Note: You can probably correct the JAVA_HOME variable path from there, but I like to have a single location for this variable so I chose the one on the .bashrc file.</p>
+
+		<h2>Changing GIT config and online repository ssh keys</h2>
+		<p>
+			When I started learning all these development tools, I was using my personnal email in my Git configuration. After getting my work email, I decided to use this new mail to create a new <a href="https://github.com">GitHub</a> account. I was still studying Git and part of the leasons was to learn how to push to an online repository and using ssh keys so that I don&#8217;t need to type my username and password repeatedly. Everything was going smooth until I decided to open my .gitconfig file and found out that I was still using my personnal email. So I changed the configuration and used my work email (not sure if it matters but I changed it anyway), regenerated my ssh key and saved it to GitHub. After that my git wasn&#8217;t pushing anymore, so what wrong did I do now? 
+		</p>
+
+		<span class="bold">Solution:</span>
+		<p>
+			After repeatedly deleting and regenerating my ssh key, I was going nowhere. So I did a little snooping around the .ssh directory:
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>ls ~/.ssh
+</span><span class='line'>id_rsa  id_rsa.pub  known_hosts</span></code></pre></td></tr></table></div></figure>
+			
+			I know that I am getting my ssh key from the id_rsa.pub file, but this known_hosts file really caught my eye. I opened it and it was all gibberish, but as the name implied, it probably was a log of remote hosts and repos but I wasn&#8217;t so sure. I decided to delete it anyway, regenerated my ssh keys and accessed my remote repository, and it worked! There was a new known_hosts file on the ssh directory that was created and everything was running smoothly again.
+		</p>
+
+		<p>
+			These are all the road blocks that I had so far, I will continue to update this blog whenever I encounter a new one.
+		</p>
+	</article>
+</section>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[My first blog...ever!]]></title>
+    <link href="http://cloud23.github.com/blog/2013/03/18/first-blog-ever/"/>
+    <updated>2013-03-18T15:15:00+08:00</updated>
+    <id>http://cloud23.github.com/blog/2013/03/18/first-blog-ever</id>
+    <content type="html"><![CDATA[<p>
+	I have been in the IT industry for more than 10 years now, but I&#8217;ve never been a big fan of blogging. I read blogs of course, but I am not the type who follows a specific person or group&#8217;s posts. 
+<!-- more -->
+	For years, the notion of following or having followers in blog sites elude me and <a href="https://twitter.com/">Twitter</a> for me was like a hill I always pass by on the way to work but never really got the chance to climb. <a href="http://www.facebook.com/">Facebook</a> has always been enough for me, I can post stuff there for all my friends to see.
+</p>
+<p>
+	A lot of things changed after I started on my new job. I was now exposed to new things I never bothered to look upon before. I decided to dual boot my laptop and installed Ubuntu, tried my hands on programming on a non-Windows programming language and joined <a href="https://github.com">GitHub</a>, a software development project collaboration site. I said to myself, &#8220;this is cool, why didn&#8217;t I checked it out before?&#8221;.  
+</p>
+<p>
+	So here I am now, giving blogging a try and exploring new things. It is even more convenient to find out that while learning how to use GIT commands, I can also try out blogging here at GitHub. How&#8217;s that for multi-tasking? I&#8217;m not gonna blabber too much since this is my first post, plus the fact that I have tons of books and tutorials to read. So I am cutting this short for now until my next post!
+</p>]]></content>
+  </entry>
+  
+</feed>
