@@ -1,0 +1,264 @@
+---
+layout: post
+title: "grailstache"
+date: 2013-05-17 11:30
+comments: true
+categories: [grails, mustache, template]
+---
+
+<section>
+	<article>
+		<p>
+			Have you ever heard of '<a href="http://mustache.github.io/">mustache</a>'? Not the kind that grows on your face and makes you look like a schnauzer. I'm talking about the web templating system with implementations available for a lot of popular programming language like ActionScript, C++, Java, JavaScript, Objective-C, Perl, PHP, Python and Ruby. It is a "logic-less" system due to the lack of control flow statements like your beloved if..else conditions and loops. I have created a simple project that uses Grails to serve mustache templates instead of the regular gsp files.
+		</p>
+		<!-- more -->
+		<h2>Foreword</h2>
+		<p>
+			Before I begin, I'd like to point out that this is an experimental project and did this to learn backend grails and mustache at the same time. If you find any mistakes on my code or you can point out a better approach to this, please don't hesitate to inform me. I will post a link to the source code on my github repository at the end of this blog. Thanks to <a href="https://github.com/edvinasbartkus/grails-mustache">edvinasbartkus</a>, I used his idea to render mustache templates, he has a different approach to this, you can check out his work over at github. Now let's begin!
+		</p>
+		<h2>Requirements</h2>
+		<p>
+			The following are the list of requirements for this project:
+			<ul>
+				<li>Grails ver. 2.2.1</li>
+				<li>Mustache.java builder 0.6</li>
+				<li>MySQL 5.6 (this is optional)</li>
+				<li>Sublime Text 2 for text editing (you can use whatever text editor you like)</li>
+			</ul>
+		</p>
+
+		<h2>Guide to growing a mustache (Building our grails/mustache project)</h2>
+		<span class="bold">Creating the project skeleton using grails</span>
+		<p>
+			We will be calling our experimental project "gTunes", a simple CRUD pages for managing song list. First off, we need to create our new grails project, you can do that by doing:
+
+			{% codeblock %}
+			grails create-app gTunes 
+			{% endcodeblock %}
+		</p>
+		<p>
+			Let us also create our domain classes and controller that we will be using while we're at it:
+{% codeblock %}
+grails create-domain-class com.gtunes.Song
+grails generate-controller com.gtunes.Song 
+{% endcodeblock %}
+			We are using the generate controller command so that we could have our CRUD (Create/Read/Update/Delete) interface for our controller. You can use the grails create-controller if you like to start on an empty controller.
+		</p>
+		<p>
+			After grails is done doing it's thing, you can now go to the folder and open your project on you favorite text editor. For me I did:
+
+{% codeblock %}
+cd gTunes
+subl .
+{% endcodeblock %}
+		</p>
+		<span class="bold">Setting up dependencies</span>
+		<p>
+			Next, we need to setup the project dependencies in the BuildConfig.groovy file:
+
+			{% codeblock "BuildConfig.groovy" lang:groovy  %}
+dependencies {
+	// specify dependencies here under either 'build', 'compile', 'runtime', 'test' or 'provided' scopes e.g.
+
+	runtime 'mysql:mysql-connector-java:5.1.22'
+	runtime 'com.github.spullara.mustache.java:builder:0.6'
+}
+			{% endcodeblock %}
+
+			Thanks to Grails' convention over configuration, that's all we need to configure to run our project.
+		</p>
+
+		<span class="bold">The controller class code</span>
+		<p>Inside our SongController class we need to add the following imports at the top after the package com.gtunes line:
+			{% codeblock "SongController.groovy" lang:groovy %}
+import java.io.Reader
+import java.io.BufferedReader
+import com.sampullara.util.FutureWriter
+import com.sampullara.mustache.MustacheBuilder
+			{% endcodeblock %}
+
+			We need these to make our mustache compiler work.
+		</p>
+		<p>
+			Next, we need to create a function that we can call to render the mustache templates. You can refactor this code and put it on a separate class so you can call it accross all your controllers. I'm just putting it here for demonstration purposes.
+			{% codeblock "Compile Mustache Function" lang:groovy https://github.com/edvinasbartkus/grails-mustache "Thanks to edvinasbartkus" %}
+private def compileMustache(def model, Reader reader) {
+    java.io.ByteArrayOutputStream baos = new ByteArrayOutputStream()
+    FutureWriter writer = new FutureWriter(new OutputStreamWriter(baos))
+        
+    new MustacheBuilder()
+            .build(reader, "mustacheOutput")
+            .execute(writer, model as Map)
+    writer.flush()
+
+    return baos.toString()    
+  }
+			{% endcodeblock %}
+
+			This function accepts a model object which Mustache will use to render (I'll explain it further when we get to the Mustache codes) and a Reader object that holds the Mustache templates to be rendered. This function basically dumps the output of the MustacheBuilder to a ByteArrayOutputStream which we can then return as string via the .toString() function. For more information on the MustacheBuilder, please visit their home page at <a href="https://github.com/spullara/mustache.java">https://github.com/spullara/mustache.java</a>
+		</p>
+		<span class="bold">Calling the mustacheCompiler</span>
+		<p>
+			Now to put our compiler to work. Let's go to the show function(if you used generate-controller, other wise just create it) in our SongController class. 
+
+			{% codeblock "SongController.groovy" lang:groovy %}
+def show(Long id) {
+	// GENERATED CODE
+  def songInstance = Song.get(id)
+  if (!songInstance) {
+      flash.message = message(code: 'default.not.found.message', args: [message(code: 'song.label', default: 'Song'), id])
+      redirect(action: "list")
+      return
+  }
+  // CODE FOR CALLING THE COMPILER
+  def si = [song: songInstance]
+  def template = applicationContext.getResourceByPath("/templates/song/show.mustache")?.getFile() 
+	String op = compileMustache(si, new BufferedReader(new FileReader(template)))
+	render op
+}
+			{% endcodeblock %}
+			Most of the code here are automatically generated by grails as part of the CRUD implementation, what we need to check here is how we render the mustache templates. First we set our model value and get the mustache file template with the following code: 
+			{% codeblock lang:groovy %}
+def si = [song: songInstance]
+def template = applicationContext.getResourceByPath("/templates/song/show.mustache")?.getFile() 
+			{% endcodeblock %}
+			I have assigned the songInstance object to the song: property of the model that we will pass to our mustache template. You can also pass the songInstance object by itself to the template and it will be accepted, there is a reason I did this which you will see when we get to the template part.
+		</p>
+		<p>
+			After we've taken care of the required parameters, we just pass them to our function that we created earlier like this:
+			{% codeblock "SongController.groovy" lang:groovy %}
+String op = compileMustache(si, new BufferedReader(new FileReader(template)))
+render op
+			{% endcodeblock %}
+			And just render them like a normal string using the render method of grails. That's about it on the part of rendering the Mustache templates from grails, let us now move on to the actual Mustache tags.
+		</p>
+		<span class="bold">The Mustache template</span>
+		<p>
+			It is now time look into the Mustache template and see how logic-less templating works. First of all let me show you how a typical Mustache template looks like:
+			{% codeblock "Typical Mustache template" lang:html http://mustache.github.io/mustache.5.html "Mustache Manual" %}
+			{% raw %}
+Hello {{name}}
+You have just won ${{value}}!
+{{#in_ca}}
+Well, ${{taxed_value}}, after taxes.
+{{/in_ca}}
+			{% endraw %}
+			{% endcodeblock %}
+
+			{% codeblock "Given the following hash:" lang:html http://mustache.github.io/mustache.5.html "Mustache Manual" %}
+			{% raw %}
+{
+  "name": "Chris",
+  "value": 10000,
+  "taxed_value": 10000 - (10000 * 0.4),
+  "in_ca": true
+}
+			{% endraw %}
+			{% endcodeblock %}
+
+			{% codeblock "Will produce the following:" lang:html http://mustache.github.io/mustache.5.html "Mustache Manual" %}
+			{% raw %}
+Hello Chris
+You have just won $10000!
+Well, $6000.0, after taxes.
+			{% endraw %}
+			{% endcodeblock %}
+		</p>
+		<p>
+			Mustache tags are surrounded by double curly brackets(I think that's were the name came from), and the most basic tag type is a variable tag as you've seen in the example above. All variables are HTML escaped by default, meaning if you have HTML tags inside your model, they will be escaped and will not be rendered like a normall HTML tag. To go around this you must either put your variables in three (3) curly brackets or add & before the variable name like this: {{& name}}.
+		</p>
+		<p>
+			The second type of tag are called section tags. A section begins with a pound and ends with a slash. To begin a section you need to do {{#person}} and {{/person}} to end it. Please visit the <a href="http://mustache.github.io/mustache.5.html">mustach manuals</a> online to read the full description of these tags.
+		</p>
+		<span class="bold">The show.mustache template</span>
+		<p>
+			Now back to our project, let us create a file in the web-app/templates folder and name it 'show.mustache'. This will be the template that will be called by our controller. Simply type the following tags:
+			{% codeblock "show.mustache" lang:html %}
+			{% raw %}
+<!-- HTML head tags ommitted here -->
+{{#song}}
+	<div class="row">
+		<span class="label in-line">Title:</span>
+		<span>{{title}}</span>
+	</div>
+	<div class="row">
+		<span class="label in-line">Artist: </span>
+		<span>{{artist}}</span>
+	</div>
+	<div class="row">
+		<span class="label in-line">Duration:</span>
+		<span>{{duration}}</span>
+	</div>
+{{/song}}
+<!-- HTML footer tags ommitted here -->
+			{% endraw %}
+			{% endcodeblock %}
+			As you can see we simply need to add the variables of our model and Mustache will render these values. Now if you remember that I told you I had a reason for putting the model under the song: of the model that I passed to this template. The reason for that is view control, since Mustache is a logic-less templating, we don't have the luxury of using if statements if we need to show or hide stuff if the value of our model is null. But by putting the entire block under the section tag, Mustache automatically determines whether or not to display our HTML code. If the song property is null, this entire block will not be vissible to the user, including the labels. Now aint that convenient? 
+		</p>
+		<p>
+			I'm guessing the question that must be going on your mind right now is "What if I need to show something to the user if the model is empty?", well you can do just that by adding a little bit to our code above. You can use "Inverted Sections" tag for that. As the name implies, it is the reverse of the Sections tag and it goes like this:
+			{% codeblock "show.mustache" lang:html %}
+			{% raw %}
+<!-- HTML head tags ommitted here -->
+{{#song}}
+	<div class="row">
+		<span class="label in-line">Title:</span>
+		<span>{{title}}</span>
+	</div>
+	<div class="row">
+		<span class="label in-line">Artist: </span>
+		<span>{{artist}}</span>
+	</div>
+	<div class="row">
+		<span class="label in-line">Duration:</span>
+		<span>{{duration}}</span>
+	</div>
+{{/song}}
+
+{{^song}}
+	<span>Sorry no song selected.</span>
+{{/song}}
+<!-- HTML footer tags ommitted here -->
+			{% endraw %}
+			{% endcodeblock %}
+		</p>
+		<span class="bold">Looping</span>
+		<p>
+			It is also easy to do looping or iteration in Mustache templates. You have already seen the code for this because it is the same as the Section tag. If you pass a list as a model, Mustache will automatically iterate through all of its contents and render whatever is inside the Section tag.
+
+			{% codeblock "list.mustache" lang:html %}
+			{% raw %}
+<!-- HTML head tags ommitted here -->
+<span class="label col-header title-col">Title</span>
+<span class="label col-header artist-col">Artist</span>
+<span class="label col-header duration-col">Duration</span>
+<span class="label col-header show-col">show</span>
+<span class="label col-header edit-col">edit</span>
+<span class="label col-header del-col">delete</span><br />
+{{#songs}}
+<div class="row">
+	<span class="title-col">{{title}}</span>
+	<span class="artist-col">{{artist}}</span>
+	<span class="duration-col align-right">{{duration}} mins</span>
+	<a class="show-col" href="show/{{id}}">show</a>
+	<a class="edit-col" href="edit/{{id}}">edit</a>
+	<a class="del-col" href="delete/{{id}}">del</a>
+</div>
+{{/songs}}
+{{^songs}}
+  <span>Empty lists</span>
+{{/songs}}
+<!-- HTML footer tags ommitted here -->
+			{% endraw %}
+			{% endcodeblock %}
+		</p>
+		<p>
+			You can now test out your application to see the results. You can also download the source code for this project on my <a href="https://github.com/cloud23/grailstache">github repository</a>.
+		</p>
+
+		<h2>Conclusion</h2>
+		<p>
+			Mustache is still quite new compared to other stablished framework and templating system, but I can see a lot of potential in it. They can also be used blogging sites where users are not real programmers but can work with HTML tags. The fact that it is logic-less will make it easy for them to use this.
+		</p>
+	</article>
+</section>
